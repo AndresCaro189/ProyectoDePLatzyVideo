@@ -1,48 +1,54 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Search from '../components/Search';
 import Categories from '../components/Categories';
 import Carousel from '../components/Carousel';
 import CarouselItem from '../components/CarouselItem';
 import Footer from '../components/Footer'
+import useInitialState from '../hooks/useInitialState'
 import '../assets/styles/App.scss';
 
-const App = () => (
-    <div className='App'>
-        <Header></Header>
-        <Search></Search>
+const API ='http://localhost:3000/initalState';
 
-        <Categories title="Mi Lista">
-            <Carousel>
-                <CarouselItem></CarouselItem>
-                <CarouselItem></CarouselItem>
-                <CarouselItem></CarouselItem>
-                <CarouselItem></CarouselItem>
-            </Carousel>
-        </Categories>
+const App = () => {
+    const initialState = useInitialState(API);
+    //console.log(videos);
 
-        <Categories title="Tendencias">
-            <Carousel>
-                <CarouselItem></CarouselItem>
-                <CarouselItem></CarouselItem>
-                <CarouselItem></CarouselItem>
-                <CarouselItem></CarouselItem>
-            </Carousel>
-        </Categories>
+    return (
+        <div className='App'>
+            <Header></Header>
+            <Search></Search>
 
-        <Categories title="Originales de PLatzi Video">
-            <Carousel>
-                <CarouselItem></CarouselItem>
-                <CarouselItem></CarouselItem>
-                <CarouselItem></CarouselItem>
-                <CarouselItem></CarouselItem>
-            </Carousel>
-        </Categories>
+            {initialState.mylist.length > 0 &&
+                <Categories title="Mi Lista">
+                    <Carousel>
+                    {initialState.mylist.map(item=>
+                        <CarouselItem key={item.id} {...item}></CarouselItem>
+                    )}
+                    </Carousel>
+                </Categories>
+            }
 
-        <Footer></Footer>
-    </div>
-);
+            <Categories title="Tendencias">
+                <Carousel>
+                    {initialState.trends.map(item=>
+                        <CarouselItem key={item.id} {...item}></CarouselItem>
+                    )}
+                </Carousel>
+            </Categories>
 
+            <Categories title="Originales de PLatzi Video">
+                <Carousel>
+                    {initialState.originals.map(item=>
+                        <CarouselItem key={item.id} {...item}></CarouselItem>
+                    )}
+                </Carousel>
+            </Categories>
+
+            <Footer></Footer>
+        </div>
+        );
+    }
 
 
 export default App;
